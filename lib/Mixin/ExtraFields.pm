@@ -11,13 +11,13 @@ Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
- $Id: ExtraFields.pm 26336 2006-12-09 01:46:51Z rjbs $
+ $Id: ExtraFields.pm 26342 2006-12-09 15:26:13Z rjbs $
 
 =cut
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 =head1 SYNOPSIS
 
@@ -104,9 +104,17 @@ A driver identifier must be either:
 =head1 GENERATED METHODS
 
 The default implementation of Mixin::ExtraFields provides a number of methods
-for accessing the extras.  Wherever "extra" appears in the following method
-names, the C<moniker> argument given to the C<fields> group will be used
-instead.
+for accessing the extras.
+
+Wherever "extra" appears in the following method names, the C<moniker> argument
+given to the C<fields> group will be used instead.  For example, if the use
+statement looked like this:
+
+ use Mixin::ExtraFields -fields => { moniker => 'info', driver => 'HashGuts' };
+
+...then a method called C<exists_info> would be generated, rather than
+C<exists_extra>.  The C<fields> group also respects renaming options documented
+in L<Sub::Exporter>.
 
 =head2 exists_extra
 
@@ -182,8 +190,27 @@ For information on writing drivers, see L<Mixin::ExtraFields::Driver>.
 
 =cut
 
+=begin wishful_thinking
+
+Wouldn't that be super?  Too bad that I can't defer the calling of this method
+until C<import> is called.
+
+=head2 default_group_name
+
+  my $name = Mixin::ExtraFields->default_group_name;
+
+This method returns the name to be used as the exported group.  It defaults to
+"fields".  By overriding this to return, for example, "stuff," your module
+could be used as follows:
+
+  use Mixin::ExtraFields::Subclass -stuff => { moniker => "things" };
+
+=end wishful_thinking
+
+=cut
+
 use Sub::Exporter -setup => {
-  groups => [ fields => \'gen_fields_group', ]
+  groups => [ fields => \'gen_fields_group', ],
 };
 
 =head2 default_moniker
@@ -239,6 +266,9 @@ This method returns the name of the driver method used to implement the given
 method name.  This is primarily useful in the default implementation of
 MixinExtraFields, where there is a one-to-one correspondence between installed
 methods and driver methods.
+
+Changing this method could very easily cause incompatibility with standard
+driver classes, and should only be done by the wise, brave, or reckless.
 
 =cut
 

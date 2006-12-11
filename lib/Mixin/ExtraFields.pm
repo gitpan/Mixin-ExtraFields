@@ -11,13 +11,13 @@ Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
- $Id: ExtraFields.pm 26342 2006-12-09 15:26:13Z rjbs $
+ $Id: ExtraFields.pm 26352 2006-12-11 15:41:08Z rjbs $
 
 =cut
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 =head1 SYNOPSIS
 
@@ -416,10 +416,6 @@ available under the same terms as perl itself.
 =over
 
 =item * handle invocants without ids (classes) and drivers that don't need ids
-
-=item * a CGI->param-like subclass, to replace Mixin::Params, never released
-
-=item * a Data::Hive-like subclass -- implemented, but too Listbox-specific
 
 =back
 

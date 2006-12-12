@@ -5,6 +5,7 @@ use warnings;
 package Mixin::ExtraFields::Driver;
 
 use Carp ();
+use Sub::Install ();
 
 =head1 NAME
 
@@ -12,13 +13,13 @@ Mixin::ExtraFields::Driver - a backend for extra field storage
 
 =head1 VERSION
 
-version 0.001
+version 0.004
 
- $Id: Driver.pm 26336 2006-12-09 01:46:51Z rjbs $
+ $Id: Driver.pm 26381 2006-12-12 01:27:55Z rjbs $
 
 =cut
 
-our $VERSION = '0.001';
+our $VERSION = '0.004';
 
 =head1 SYNOPSIS
 
@@ -131,7 +132,7 @@ itself or a detailed hashref describing it.
 sub get_extra {
   my ($self, $object, $id, $name) = @_;
   
-  my $extra = $self->get_extra_detailed($object, $id, $name);
+  my $extra = $self->get_detailed_extra($object, $id, $name);
   return $extra ? $extra->{value} : ();
 }
 
@@ -185,7 +186,7 @@ sub delete_all_extra {
   my ($self, $object, $id) = @_;
 
   for my $name ($self->get_all_extra_names($object, $id)) {
-    $self->delete_extra($object, $id);
+    $self->delete_extra($object, $id, $name);
   }
 }
 
@@ -202,3 +203,4 @@ available under the same terms as perl itself.
 =cut
 
 1;
+

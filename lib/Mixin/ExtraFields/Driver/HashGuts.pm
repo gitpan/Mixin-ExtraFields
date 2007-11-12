@@ -11,13 +11,11 @@ Mixin::ExtraFields::Driver::HashGuts - store extras in a hashy object's guts
 
 =head1 VERSION
 
-version 0.004
-
- $Id: HashGuts.pm 26381 2006-12-12 01:27:55Z rjbs $
+version 0.005
 
 =cut
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 =head1 SYNOPSIS
 

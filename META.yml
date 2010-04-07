@@ -19,4 +19,4 @@ requires:
   String::RewritePrefix: 0
   Sub::Exporter: 0.972
   Sub::Install: 0
-version: 0.100970
+version: 0.100971

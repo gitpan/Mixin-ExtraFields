@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Mixin::ExtraFields;
+BEGIN {
+  $Mixin::ExtraFields::VERSION = '0.100971';
+}
 
 use Carp ();
 use String::RewritePrefix;
@@ -12,11 +15,7 @@ Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 VERSION
 
-version 0.008
-
-=cut
-
-our $VERSION = '0.008';
+version 0.100971
 
 =head1 SYNOPSIS
 

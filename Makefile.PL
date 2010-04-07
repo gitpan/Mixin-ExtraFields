@@ -23,7 +23,7 @@ my %WriteMakefileArgs = (
                                            },
                        'ABSTRACT' => 'add extra stashes of data to your objects',
                        'EXE_FILES' => [],
-                       'VERSION' => '0.100970',
+                       'VERSION' => '0.100971',
                        'PREREQ_PM' => {
                                         'Scalar::Util' => '0',
                                         'Sub::Install' => '0',

@@ -3,6 +3,9 @@ use strict;
 use warnings;
 
 package Mixin::ExtraFields::Driver;
+BEGIN {
+  $Mixin::ExtraFields::Driver::VERSION = '0.100971';
+}
 
 use Carp ();
 use Sub::Install ();
@@ -13,11 +16,7 @@ Mixin::ExtraFields::Driver - a backend for extra field storage
 
 =head1 VERSION
 
-version 0.008
-
-=cut
-
-our $VERSION = '0.008';
+version 0.100971
 
 =head1 SYNOPSIS
 
@@ -201,4 +200,3 @@ available under the same terms as perl itself.
 =cut
 
 1;
-

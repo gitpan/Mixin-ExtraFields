@@ -1,8 +1,10 @@
-
 use strict;
 use warnings;
 
 package Mixin::ExtraFields::Driver::HashGuts;
+BEGIN {
+  $Mixin::ExtraFields::Driver::HashGuts::VERSION = '0.100971';
+}
 use base qw(Mixin::ExtraFields::Driver);
 
 =head1 NAME
@@ -11,11 +13,7 @@ Mixin::ExtraFields::Driver::HashGuts - store extras in a hashy object's guts
 
 =head1 VERSION
 
-version 0.008
-
-=cut
-
-our $VERSION = '0.008';
+version 0.100971
 
 =head1 SYNOPSIS
 

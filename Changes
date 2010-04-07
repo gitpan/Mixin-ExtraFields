@@ -1,5 +1,8 @@
 Changelog for Mixin-ExtraFields
 
+0.100970  2010-04-06 21:49:43 America/New_York
+          repackage with Dist::Zilla to fix some packaging issues in 0.008
+
 0.008     2010-01-18
           allow the user to specify a different driver base class
           allow the user to provide a driver instance to ->import

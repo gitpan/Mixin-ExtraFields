@@ -1,9 +1,13 @@
-README for Mixin-ExtraFields
 
-To install:
 
-  perl Makefile.PL
-  make test
-  sudo make install
+This archive contains the distribution Mixin-ExtraFields,
+version 0.100970:
 
-Consult the POD for further documentation.
+  add extra stashes of data to your objects
+
+This software is copyright (c) 2010 by Ricardo Signes.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+

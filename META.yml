@@ -1,0 +1,22 @@
+---
+abstract: 'add extra stashes of data to your objects'
+author:
+  - 'Ricardo Signes <rjbs@cpan.org>'
+build_requires:
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.31
+generated_by: 'Dist::Zilla version 2.100960'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Mixin-ExtraFields
+recommends: {}
+requires:
+  Carp: 0
+  Scalar::Util: 0
+  String::RewritePrefix: 0
+  Sub::Exporter: 0.972
+  Sub::Install: 0
+version: 0.100970

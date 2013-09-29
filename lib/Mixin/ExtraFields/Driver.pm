@@ -3,8 +3,8 @@ use strict;
 use warnings;
 
 package Mixin::ExtraFields::Driver;
-BEGIN {
-  $Mixin::ExtraFields::Driver::VERSION = '0.100971';
+{
+  $Mixin::ExtraFields::Driver::VERSION = '0.132720';
 }
 
 use Carp ();
@@ -16,7 +16,7 @@ Mixin::ExtraFields::Driver - a backend for extra field storage
 
 =head1 VERSION
 
-version 0.100971
+version 0.132720
 
 =head1 SYNOPSIS
 

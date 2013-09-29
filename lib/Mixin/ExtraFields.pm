@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Mixin::ExtraFields;
-BEGIN {
-  $Mixin::ExtraFields::VERSION = '0.100971';
+{
+  $Mixin::ExtraFields::VERSION = '0.132720';
 }
 
 use Carp ();
@@ -15,7 +15,7 @@ Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 VERSION
 
-version 0.100971
+version 0.132720
 
 =head1 SYNOPSIS
 

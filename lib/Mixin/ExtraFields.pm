@@ -3,19 +3,165 @@ use warnings;
 
 package Mixin::ExtraFields;
 {
-  $Mixin::ExtraFields::VERSION = '0.132720';
+  $Mixin::ExtraFields::VERSION = '0.132721';
 }
 
 use Carp ();
 use String::RewritePrefix;
 
+
+
+
+use Sub::Exporter 0.972 -setup => {
+  groups => [ fields => \'gen_fields_group', ],
+};
+
+
+sub default_moniker { 'extra' }
+
+
+sub methods {
+  qw(
+    exists
+    get_detailed get_all_detailed
+    get          get_all
+                 get_all_names
+    set
+    delete       delete_all
+  )
+}
+
+
+sub method_name {
+  my ($self, $method, $moniker) = @_;
+
+  return "get_all_$moniker\_names" if $method eq 'get_all_names';
+  return "$method\_$moniker";
+}
+
+
+sub driver_method_name {
+  my ($self, $method) = @_;
+  $self->method_name($method, 'extra');
+}
+
+
+sub gen_fields_group {
+  my ($class, $name, $arg, $col) = @_;
+
+  $arg->{driver} ||= $class->default_driver_arg;
+  my $driver = $class->build_driver($arg->{driver});
+
+  my $id_method;
+  if (exists $arg->{id} and defined $arg->{id}) {
+    $id_method = $arg->{id};
+  } elsif (exists $arg->{id}) {
+    require Scalar::Util;
+    $id_method = \&Scalar::Util::refaddr;
+  } else {
+    $id_method = 'id';
+  }
+
+  my $moniker   = $arg->{moniker} || $class->default_moniker;
+
+  my %method;
+  for my $method_name ($class->methods) {
+    my $install_method = $class->method_name($method_name, $moniker);
+
+    $method{ $install_method } = $class->build_method(
+      $method_name,
+      {
+        id_method => \$id_method,
+        driver    => \$driver,
+        moniker   => \$moniker, # So that things can refer to one another
+      }
+    );
+  }
+
+  return \%method;
+}
+
+
+sub build_method {
+  my ($self, $method_name, $arg) = @_;
+
+  # Remember that these are all passed in as references, to avoid unneeded
+  # copying. -- rjbs, 2006-12-07
+  my $id_method = $arg->{id_method};
+  my $driver    = $arg->{driver};
+
+  my $driver_method  = $self->driver_method_name($method_name);
+
+  return sub {
+    my $object = shift;
+    my $id     = $object->$$id_method;
+    Carp::confess "couldn't determine id for object" unless defined $id;
+    $$driver->$driver_method($object, $id, @_);
+  };
+}
+
+
+sub default_driver_arg {
+  my ($class) = shift;
+  Carp::croak "no driver supplied to $class";
+}
+
+
+sub build_driver {
+  my ($self, $arg) = @_;
+
+  return $arg if Params::Util::_INSTANCE($arg, $self->driver_base_class);
+
+  my ($driver_class, $driver_args) = $self->_driver_class_and_args($arg);
+
+  Carp::croak("invalid class name for driver: $driver_class")
+    unless Params::Util::_CLASS($driver_class);
+
+  eval "require $driver_class; 1" or Carp::croak $@;
+
+  my $driver = $driver_class->from_args($driver_args);
+}
+
+sub _driver_class_and_args {
+  my ($self, $arg) = @_;
+
+  my $class;
+  if (ref $arg) {
+    $class = delete $arg->{class};
+  } else {
+    $class = $arg;
+    $arg = {};
+  }
+
+  $class = String::RewritePrefix->rewrite(
+    {
+      '+' => '',
+      '=' => '',
+      ''  => $self->driver_base_class . '::',
+    },
+    $class,
+  );
+
+  return $class, $arg;
+}
+
+
+sub driver_base_class { 'Mixin::ExtraFields::Driver' }
+
+
+1;
+
+__END__
+
+=pod
+
 =head1 NAME
 
-Mixin::ExtraFields - add extra stashes of data to your objects
+Mixin::ExtraFields
 
 =head1 VERSION
 
-version 0.132720
+version 0.132721
 
 =head1 SYNOPSIS
 
@@ -62,6 +208,10 @@ anywhere else.  The storage mechanism is abstracted away from the provided
 interface, so one storage mechanism can be easily swapped for another.
 Multiple ExtraFields stashes can be mixed into one class, using one or many
 storage mechanisms.
+
+=head1 NAME
+
+Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 MIXING IN
 
@@ -176,8 +326,6 @@ that name.
 
 This method deletes all entries for the object.
 
-=cut
-
 =head1 SUBCLASSING
 
 Mixin::ExtraFields can be subclassed to produce different methods, provide
@@ -190,8 +338,6 @@ export the methods that are mixed in.  These are the methods you should
 override when subclassing Mixin::ExtraFields.
 
 For information on writing drivers, see L<Mixin::ExtraFields::Driver>.
-
-=cut
 
 =begin wishful_thinking
 
@@ -210,20 +356,10 @@ could be used as follows:
 
 =end wishful_thinking
 
-=cut
-
-use Sub::Exporter 0.972 -setup => {
-  groups => [ fields => \'gen_fields_group', ],
-};
-
 =head2 default_moniker
 
 This method returns the default moniker.  The default default moniker defaults
 to the default "extra".
-
-=cut
-
-sub default_moniker { 'extra' }
 
 =head2 methods
 
@@ -233,19 +369,6 @@ C<L</method_name>>.
 
   my @methods = Mixin::ExtraFields->methods;
 
-=cut
-
-sub methods {
-  qw(
-    exists
-    get_detailed get_all_detailed
-    get          get_all
-                 get_all_names
-    set
-    delete       delete_all
-  )
-}
-
 =head2 method_name
 
   my $method_name = Mixin::ExtraFields->method_name($method_base, $moniker);
@@ -253,15 +376,6 @@ sub methods {
 This method returns the method name that will be installed into the importing
 class.  Its default behavior is to join the method base (which comes from the
 C<L</methods>> method) and the moniker with an underscore, more or less.
-
-=cut
-
-sub method_name {
-  my ($self, $method, $moniker) = @_;
-
-  return "get_all_$moniker\_names" if $method eq 'get_all_names';
-  return "$method\_$moniker";
-}
 
 =head2 driver_method_name
 
@@ -273,56 +387,12 @@ methods and driver methods.
 Changing this method could very easily cause incompatibility with standard
 driver classes, and should only be done by the wise, brave, or reckless.
 
-=cut
-
-sub driver_method_name {
-  my ($self, $method) = @_;
-  $self->method_name($method, 'extra');
-}
-
 =head2 gen_fields_group
 
   my $sub_href = Mixin::ExtraFields->gen_fields_group($name, \%arg, \%col);
 
 This method is a group generator, as used by L<Sub::Exporter> and described in
 its documentation.  It is the method you are least likely to subclass.
-
-=cut
-
-sub gen_fields_group {
-  my ($class, $name, $arg, $col) = @_;
-
-  $arg->{driver} ||= $class->default_driver_arg;
-  my $driver = $class->build_driver($arg->{driver});
-
-  my $id_method;
-  if (exists $arg->{id} and defined $arg->{id}) {
-    $id_method = $arg->{id};
-  } elsif (exists $arg->{id}) {
-    require Scalar::Util;
-    $id_method = \&Scalar::Util::refaddr;
-  } else {
-    $id_method = 'id';
-  }
-
-  my $moniker   = $arg->{moniker} || $class->default_moniker;
-
-  my %method;
-  for my $method_name ($class->methods) {
-    my $install_method = $class->method_name($method_name, $moniker);
-
-    $method{ $install_method } = $class->build_method(
-      $method_name,
-      {
-        id_method => \$id_method,
-        driver    => \$driver,
-        moniker   => \$moniker, # So that things can refer to one another
-      }
-    );
-  }
-
-  return \%method;
-}
 
 =head2 build_method
 
@@ -340,39 +410,12 @@ expect.  That is, if the id method is "foo" you will be given an reference to
 the string foo.  (This reduces the copies of common values that will be enclosed
 into generated code.)
 
-=cut
-
-sub build_method {
-  my ($self, $method_name, $arg) = @_;
-
-  # Remember that these are all passed in as references, to avoid unneeded
-  # copying. -- rjbs, 2006-12-07
-  my $id_method = $arg->{id_method};
-  my $driver    = $arg->{driver};
-
-  my $driver_method  = $self->driver_method_name($method_name);
-
-  return sub {
-    my $object = shift;
-    my $id     = $object->$$id_method;
-    Carp::confess "couldn't determine id for object" unless defined $id;
-    $$driver->$driver_method($object, $id, @_);
-  };
-}
-
 =head2 default_driver_arg
 
   my $arg = Mixin::ExtraFields->default_driver_arg;
 
 This method a default value for the C<driver> argument to the fields group
 generator.  By default, this method will croak if called.
-
-=cut
-
-sub default_driver_arg {
-  my ($class) = shift;
-  Carp::croak "no driver supplied to $class";
-}
 
 =head2 build_driver
 
@@ -382,54 +425,10 @@ This method constructs and returns the driver object to be used by the
 generated methods.  It is passed the C<driver> argument given in the importing
 code's C<use> statement.
 
-=cut
-
-sub build_driver {
-  my ($self, $arg) = @_;
-
-  return $arg if Params::Util::_INSTANCE($arg, $self->driver_base_class);
-
-  my ($driver_class, $driver_args) = $self->_driver_class_and_args($arg);
-
-  Carp::croak("invalid class name for driver: $driver_class")
-    unless Params::Util::_CLASS($driver_class);
-
-  eval "require $driver_class; 1" or Carp::croak $@;
-
-  my $driver = $driver_class->from_args($driver_args);
-}
-
-sub _driver_class_and_args {
-  my ($self, $arg) = @_;
-
-  my $class;
-  if (ref $arg) {
-    $class = delete $arg->{class};
-  } else {
-    $class = $arg;
-    $arg = {};
-  }
-
-  $class = String::RewritePrefix->rewrite(
-    {
-      '+' => '',
-      '=' => '',
-      ''  => $self->driver_base_class . '::',
-    },
-    $class,
-  );
-
-  return $class, $arg;
-}
-
 =head2 driver_base_class
 
 This is the name of the name of the class which drivers are expected to
 subclass.  By default it returns C<Mixin::ExtraFields::Driver>.
-
-=cut
-
-sub driver_base_class { 'Mixin::ExtraFields::Driver' }
 
 =head1 AUTHOR
 
@@ -449,6 +448,15 @@ available under the same terms as perl itself.
 
 =back
 
-=cut
+=head1 AUTHOR
 
-1;
+Ricardo Signes <rjbs@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Ricardo Signes.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

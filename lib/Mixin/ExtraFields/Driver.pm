@@ -4,19 +4,83 @@ use warnings;
 
 package Mixin::ExtraFields::Driver;
 {
-  $Mixin::ExtraFields::Driver::VERSION = '0.132720';
+  $Mixin::ExtraFields::Driver::VERSION = '0.132721';
 }
 
 use Carp ();
 use Sub::Install ();
 
+
+BEGIN {
+  for my $name (qw(from_args get_all_detailed_extra set_extra delete_extra)) {
+    Sub::Install::install_sub({
+      as   => $name,
+      code => sub { Carp::confess "method $name called but not implemented!" },
+    });
+  }
+}
+
+
+sub get_all_extra {
+  my ($self, $object, $id) = @_;
+  
+  my %extra  = $self->get_all_detailed_extra($object, $id);
+  my @simple = map { $_ => $extra{$_}{value} } keys %extra;
+}
+
+
+sub get_extra {
+  my ($self, $object, $id, $name) = @_;
+  
+  my $extra = $self->get_detailed_extra($object, $id, $name);
+  return $extra ? $extra->{value} : ();
+}
+
+sub get_detailed_extra {
+  my ($self, $object, $id, $name) = @_;
+
+  my %extra = $self->get_all_detailed_extra($object, $id);
+  return exists $extra{$name} ? $extra{$name} : ();
+}
+
+
+sub get_all_extra_names {
+  my ($self, $object, $id) = @_;
+  my %extra = $self->get_all_detailed_extra($object, $id);
+  return keys %extra;
+}
+
+
+sub exists_extra {
+  my ($self, $object, $id, $name) = @_;
+  my %extra = $self->get_all_detailed_extra($object, $id);
+
+  return exists $extra{ $name };
+}
+
+
+sub delete_all_extra {
+  my ($self, $object, $id) = @_;
+
+  for my $name ($self->get_all_extra_names($object, $id)) {
+    $self->delete_extra($object, $id, $name);
+  }
+}
+
+
+1;
+
+__END__
+
+=pod
+
 =head1 NAME
 
-Mixin::ExtraFields::Driver - a backend for extra field storage
+Mixin::ExtraFields::Driver
 
 =head1 VERSION
 
-version 0.132720
+version 0.132721
 
 =head1 SYNOPSIS
 
@@ -33,6 +97,10 @@ Mixin::ExtraFields::Driver is a base class for drivers used by
 Mixin::ExtraFields -- hence the name.  A driver is expected to store and
 retrieve data keyed to an object and a name or key.  It can store this in any
 way it likes, and does not need to guarantee persistence across processes.
+
+=head1 NAME
+
+Mixin::ExtraFields::Driver - a backend for extra field storage
 
 =head1 SUBCLASSING
 
@@ -78,17 +146,6 @@ This method must set the named extra to the given value.
 
 This method must delete the named extra, causing it to cease to exist.
 
-=cut
-
-BEGIN {
-  for my $name (qw(from_args get_all_detailed_extra set_extra delete_extra)) {
-    Sub::Install::install_sub({
-      as   => $name,
-      code => sub { Carp::confess "method $name called but not implemented!" },
-    });
-  }
-}
-
 =head1 OPTIMIZING
 
 The methods below can all be implemented in terms of those above.  If they are
@@ -104,15 +161,6 @@ subclasses should consider implementing these methods.
 This method behaves like C<get_all_detailed_extra>, above, but provides the
 entry's value, not a detailed hashref, as the value for each entry.
 
-=cut
-
-sub get_all_extra {
-  my ($self, $object, $id) = @_;
-  
-  my %extra  = $self->get_all_detailed_extra($object, $id);
-  my @simple = map { $_ => $extra{$_}{value} } keys %extra;
-}
-
 =head2 get_extra
 
 =head2 get_detailed_extra
@@ -124,35 +172,11 @@ sub get_all_extra {
 These methods return a single value requested by name, either as the value
 itself or a detailed hashref describing it.
 
-=cut
-
-sub get_extra {
-  my ($self, $object, $id, $name) = @_;
-  
-  my $extra = $self->get_detailed_extra($object, $id, $name);
-  return $extra ? $extra->{value} : ();
-}
-
-sub get_detailed_extra {
-  my ($self, $object, $id, $name) = @_;
-
-  my %extra = $self->get_all_detailed_extra($object, $id);
-  return exists $extra{$name} ? $extra{$name} : ();
-}
-
 =head2 get_all_extra_names
 
   my @names = $driver->get_all_extra_names($object, $id);
 
 This method returns the names of all existing extras for the given object.
-
-=cut
-
-sub get_all_extra_names {
-  my ($self, $object, $id) = @_;
-  my %extra = $self->get_all_detailed_extra($object, $id);
-  return keys %extra;
-}
 
 =head2 exists_extra
 
@@ -161,31 +185,12 @@ sub get_all_extra_names {
 This method returns true if an entry exists for the given name and false
 otherwise.
 
-=cut
-
-sub exists_extra {
-  my ($self, $object, $id, $name) = @_;
-  my %extra = $self->get_all_detailed_extra($object, $id);
-
-  return exists $extra{ $name };
-}
-
 =head2 delete_all_extra
 
   $driver->delete_all_extra($object, $id);
 
 This method deletes all extras for the object, as per the C<delete_extra>
 method.
-
-=cut
-
-sub delete_all_extra {
-  my ($self, $object, $id) = @_;
-
-  for my $name ($self->get_all_extra_names($object, $id)) {
-    $self->delete_extra($object, $id, $name);
-  }
-}
 
 =head1 AUTHOR
 
@@ -197,6 +202,15 @@ Listbox.
 Copyright (C) 2006, Ricardo SIGNES.  This code is free software, and is
 available under the same terms as perl itself.
 
-=cut
+=head1 AUTHOR
 
-1;
+Ricardo Signes <rjbs@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Ricardo Signes.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

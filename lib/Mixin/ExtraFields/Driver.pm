@@ -4,7 +4,7 @@ use warnings;
 
 package Mixin::ExtraFields::Driver;
 {
-  $Mixin::ExtraFields::Driver::VERSION = '0.132721';
+  $Mixin::ExtraFields::Driver::VERSION = '0.140001';
 }
 
 use Carp ();
@@ -80,7 +80,7 @@ Mixin::ExtraFields::Driver
 
 =head1 VERSION
 
-version 0.132721
+version 0.140001
 
 =head1 SYNOPSIS
 

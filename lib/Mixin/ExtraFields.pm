@@ -3,7 +3,7 @@ use warnings;
 
 package Mixin::ExtraFields;
 {
-  $Mixin::ExtraFields::VERSION = '0.132721';
+  $Mixin::ExtraFields::VERSION = '0.140001';
 }
 
 use Carp ();
@@ -161,7 +161,7 @@ Mixin::ExtraFields
 
 =head1 VERSION
 
-version 0.132721
+version 0.140001
 
 =head1 SYNOPSIS
 

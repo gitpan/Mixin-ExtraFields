@@ -3,7 +3,7 @@ use warnings;
 
 package Mixin::ExtraFields::Driver::HashGuts;
 {
-  $Mixin::ExtraFields::Driver::HashGuts::VERSION = '0.132721';
+  $Mixin::ExtraFields::Driver::HashGuts::VERSION = '0.140001';
 }
 use base qw(Mixin::ExtraFields::Driver);
 
@@ -111,7 +111,7 @@ Mixin::ExtraFields::Driver::HashGuts
 
 =head1 VERSION
 
-version 0.132721
+version 0.140001
 
 =head1 SYNOPSIS
 

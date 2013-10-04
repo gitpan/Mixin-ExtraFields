@@ -3,8 +3,9 @@ use warnings;
 
 package Mixin::ExtraFields;
 {
-  $Mixin::ExtraFields::VERSION = '0.140001';
+  $Mixin::ExtraFields::VERSION = '0.140002';
 }
+# ABSTRACT: add extra stashes of data to your objects
 
 use Carp ();
 use String::RewritePrefix;
@@ -157,11 +158,11 @@ __END__
 
 =head1 NAME
 
-Mixin::ExtraFields
+Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 VERSION
 
-version 0.140001
+version 0.140002
 
 =head1 SYNOPSIS
 
@@ -208,10 +209,6 @@ anywhere else.  The storage mechanism is abstracted away from the provided
 interface, so one storage mechanism can be easily swapped for another.
 Multiple ExtraFields stashes can be mixed into one class, using one or many
 storage mechanisms.
-
-=head1 NAME
-
-Mixin::ExtraFields - add extra stashes of data to your objects
 
 =head1 MIXING IN
 
@@ -429,16 +426,6 @@ code's C<use> statement.
 
 This is the name of the name of the class which drivers are expected to
 subclass.  By default it returns C<Mixin::ExtraFields::Driver>.
-
-=head1 AUTHOR
-
-This code was written by Ricardo SIGNES.  His work in 2006 was sponsored by
-Listbox.
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2006, Ricardo SIGNES.  This code is free software, and is
-available under the same terms as perl itself.
 
 =head1 TODO
 

@@ -4,7 +4,7 @@
       "Ricardo Signes <rjbs@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.132620",
+   "generated_by" : "Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.132661",
    "license" : [
       "perl_5"
    ],
@@ -32,7 +32,7 @@
             "String::RewritePrefix" : "0",
             "Sub::Exporter" : "0.972",
             "Sub::Install" : "0",
-            "base" : "0",
+            "parent" : "0",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -43,6 +43,7 @@
             "IO::Handle" : "0",
             "IPC::Open3" : "0",
             "Test::More" : "0.96",
+            "base" : "0",
             "lib" : "0"
          }
       }
@@ -59,7 +60,7 @@
          "web" : "https://github.com/rjbs/Mixin-ExtraFields"
       }
    },
-   "version" : "0.140001",
+   "version" : "0.140002",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.019004"
@@ -83,12 +84,12 @@
          {
             "class" : "Dist::Zilla::Plugin::PromptIfStale",
             "name" : "@RJBS/RJBS-Outdated",
-            "version" : "0.006"
+            "version" : "0.007"
          },
          {
             "class" : "Dist::Zilla::Plugin::PromptIfStale",
             "name" : "@RJBS/CPAN-Outdated",
-            "version" : "0.006"
+            "version" : "0.007"
          },
          {
             "class" : "Dist::Zilla::Plugin::PruneCruft",
@@ -193,7 +194,7 @@
          {
             "class" : "Dist::Zilla::Plugin::ReportVersions::Tiny",
             "name" : "@RJBS/ReportVersions::Tiny",
-            "version" : "1.09"
+            "version" : "1.10"
          },
          {
             "class" : "Dist::Zilla::Plugin::Test::Compile",
@@ -238,7 +239,7 @@
          {
             "class" : "Dist::Zilla::Plugin::GithubMeta",
             "name" : "@RJBS/GithubMeta",
-            "version" : "0.40"
+            "version" : "0.42"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::Check",

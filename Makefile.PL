@@ -25,7 +25,7 @@ my %WriteMakefileArgs = (
     "String::RewritePrefix" => 0,
     "Sub::Exporter" => "0.972",
     "Sub::Install" => 0,
-    "base" => 0,
+    "parent" => 0,
     "strict" => 0,
     "warnings" => 0
   },
@@ -34,9 +34,10 @@ my %WriteMakefileArgs = (
     "IO::Handle" => 0,
     "IPC::Open3" => 0,
     "Test::More" => "0.96",
+    "base" => 0,
     "lib" => 0
   },
-  "VERSION" => "0.140001",
+  "VERSION" => "0.140002",
   "test" => {
     "TESTS" => "t/*.t"
   }

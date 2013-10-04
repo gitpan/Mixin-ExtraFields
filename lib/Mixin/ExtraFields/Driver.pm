@@ -4,8 +4,9 @@ use warnings;
 
 package Mixin::ExtraFields::Driver;
 {
-  $Mixin::ExtraFields::Driver::VERSION = '0.140001';
+  $Mixin::ExtraFields::Driver::VERSION = '0.140002';
 }
+# ABSTRACT: a backend for extra field storage
 
 use Carp ();
 use Sub::Install ();
@@ -67,7 +68,6 @@ sub delete_all_extra {
   }
 }
 
-
 1;
 
 __END__
@@ -76,11 +76,11 @@ __END__
 
 =head1 NAME
 
-Mixin::ExtraFields::Driver
+Mixin::ExtraFields::Driver - a backend for extra field storage
 
 =head1 VERSION
 
-version 0.140001
+version 0.140002
 
 =head1 SYNOPSIS
 
@@ -97,10 +97,6 @@ Mixin::ExtraFields::Driver is a base class for drivers used by
 Mixin::ExtraFields -- hence the name.  A driver is expected to store and
 retrieve data keyed to an object and a name or key.  It can store this in any
 way it likes, and does not need to guarantee persistence across processes.
-
-=head1 NAME
-
-Mixin::ExtraFields::Driver - a backend for extra field storage
 
 =head1 SUBCLASSING
 
@@ -191,16 +187,6 @@ otherwise.
 
 This method deletes all extras for the object, as per the C<delete_extra>
 method.
-
-=head1 AUTHOR
-
-This code was written by Ricardo SIGNES.  His code in 2006 was sponsored by
-Listbox.
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2006, Ricardo SIGNES.  This code is free software, and is
-available under the same terms as perl itself.
 
 =head1 AUTHOR
 

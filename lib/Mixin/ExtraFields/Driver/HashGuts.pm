@@ -3,9 +3,10 @@ use warnings;
 
 package Mixin::ExtraFields::Driver::HashGuts;
 {
-  $Mixin::ExtraFields::Driver::HashGuts::VERSION = '0.140001';
+  $Mixin::ExtraFields::Driver::HashGuts::VERSION = '0.140002';
 }
-use base qw(Mixin::ExtraFields::Driver);
+use parent qw(Mixin::ExtraFields::Driver);
+# ABSTRACT: store extras in a hashy object's guts
 
 
 sub hash_key {
@@ -98,7 +99,6 @@ sub delete_all_extra {
   %{ $self->storage_for($object, $id) } = ();
 }
 
-
 1;
 
 __END__
@@ -107,11 +107,11 @@ __END__
 
 =head1 NAME
 
-Mixin::ExtraFields::Driver::HashGuts
+Mixin::ExtraFields::Driver::HashGuts - store extras in a hashy object's guts
 
 =head1 VERSION
 
-version 0.140001
+version 0.140002
 
 =head1 SYNOPSIS
 
@@ -130,10 +130,6 @@ configuration, like so:
   use Mixin::ExtraFields -fields => {
     driver => { class => 'HashGuts', hash_key => "\0Something\0Wicked\0" }
   };
-
-=head1 NAME
-
-Mixin::ExtraFields::Driver::HashGuts - store extras in a hashy object's guts
 
 =head1 METHODS
 
@@ -171,16 +167,6 @@ things:  first, even if all objects with a given id go out of scope, future
 objects with that id will retain the original extras; secondly, memory used to
 store extras is never reclaimed.  If this is a problem, use a more
 sophisticated driver.
-
-=head1 AUTHOR
-
-This code was written by Ricardo SIGNES.  His code in 2006 was sponsored by
-Listbox.
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2006, Ricardo SIGNES.  This code is free software, and is
-available under the same terms as perl itself.
 
 =head1 AUTHOR
 
